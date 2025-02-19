@@ -52,11 +52,10 @@ const ticker = data.ticker
 
 export default function Home() {
   return (
-    <div>
-      <main>
+    <>
+      <main className="mt-[5vh]">
         <Graph prices={prices} dates={dates} time={timestamp} ticker={ticker}/>
       </main>
-
-    </div>
+    </>
   );
 }
