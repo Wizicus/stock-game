@@ -8,15 +8,13 @@ import Controls from "./controls";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler );
 
-export default function Graph({prices, dates, data}: {prices: number[], dates: string[], data: any}) {
+export default function Graph({prices, dates, time, ticker}: {prices: number[], dates: string[], time: number, ticker:string}) {
   const [newPrices, setNewPrice] = useState(prices)
   const [newDates, setNewDates] = useState(dates)
-  const [timestamp, setTimestamp] = useState(data.results[data.results.length-1].t)
+  const [timestamp, setTimestamp] = useState(time)
   const [animations, setAnimations] = useState(true)
   const currentPrice = parseFloat(newPrices[newPrices.length-1].toFixed(2))
   const [pattern, setPattern] = useState(getPattern(currentPrice))
-  console.log('-----pattern-----')
-  console.log(pattern)
 
   let [nextDay, t] = getNextDay(timestamp)
 
@@ -25,7 +23,7 @@ export default function Graph({prices, dates, data}: {prices: number[], dates: s
       let timeoutId: NodeJS.Timeout
       timeoutId= setTimeout(()=>{
         nextDay = nextDay.toString()
-        let orders: number[] = [...pattern]
+        const orders: number[] = [...pattern]
         let nextPrice: number = 0
         if (orders.length < 2 && orders.length > 0){
           nextPrice = orders[0]
@@ -38,8 +36,8 @@ export default function Graph({prices, dates, data}: {prices: number[], dates: s
 
         if(newPrices.length > 99){
           setAnimations(false)
-          let arr: number[] = [...newPrices, nextPrice]
-          let arr2: string[] = [...newDates, nextDay]
+          const arr: number[] = [...newPrices, nextPrice]
+          const arr2: string[] = [...newDates, nextDay]
 
           arr.shift()
           arr2.shift()
@@ -52,7 +50,7 @@ export default function Graph({prices, dates, data}: {prices: number[], dates: s
           setNewDates([...newDates, nextDay])
         }
 
-        console.log(newPrices)
+        t = Number(t)
         setTimestamp(t)
       }, 2500)
       return timeoutId
@@ -68,7 +66,7 @@ export default function Graph({prices, dates, data}: {prices: number[], dates: s
         labels: newDates,
         datasets: [
             {
-                label: `${data.ticker}`,
+                label: `${ticker}`,
                 data: newPrices,
                 fill: false,
                 borderColor: "rgb(75, 192, 192)",
@@ -76,7 +74,7 @@ export default function Graph({prices, dates, data}: {prices: number[], dates: s
             }
         ]
     }
-    const options: any = {
+    const options: object = {
       animation: animations,
         scales: {
           y: {

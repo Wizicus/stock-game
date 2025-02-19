@@ -1,6 +1,14 @@
 import Graph from "./ui/graph"
 
-const url = 'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=AKvXKL0saQx8gH59kkDgsFzEJsTmcrRh'
+const today = new Date()
+const yesterday = new Date()
+yesterday.setDate(yesterday.getDate()-15)
+const formatToday = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${(today.getDate()).toString().padStart(2, '0')}`
+const formatYesterday = `${yesterday.getFullYear()}-${(yesterday.getMonth()+1).toString().padStart(2, '0')}-${(yesterday.getDate()-1).toString().padStart(2, '0')}`
+console.log(formatToday)
+console.log(formatYesterday)
+
+const url = `https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/${formatYesterday}/${formatToday}?adjusted=true&sort=asc&apiKey=AKvXKL0saQx8gH59kkDgsFzEJsTmcrRh`
 {/*{ticker: stock ticker, resultsCount: number of matching results,
   results[{
     v: trading volume in given time period
@@ -14,43 +22,39 @@ const url = 'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2023-01-09/2
   }]} */}
 
 async function getData(){
-  console.log('--------in getData--------')
   try{
     const response = await fetch(url)
     if(!response.ok){
       throw new Error(`Response status: ${response.status}`)
     }
     const json = await response.json()
-    console.log(json)
-    console.log('--------exiting getData--------')
     return json
   }
-  catch(error: any){
+  catch(error){
     throw error
-    console.error(error.message)
   }
 
 };
 
 const data = await getData()
 const length = data.results.length
-let prices: Array<number> = []
-let dates: string[] = []
+const prices: Array<number> = []
+const dates: string[] = []
 for(let i=0; i < length; i++){
-  let price = data.results[i].vw
+  const price = data.results[i].vw
   prices.push(price)
-  let date = new Date(data.results[i].t)
-  console.log(date)
-  console.log(date.getDate())
+  const date = new Date(data.results[i].t)
   const dateFormat = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
   dates.push(dateFormat)
 }
+const timestamp = data.results[data.results.length-1].t
+const ticker = data.ticker
 
 export default function Home() {
   return (
     <div>
       <main>
-        <Graph prices={prices} dates={dates} data={data}/>
+        <Graph prices={prices} dates={dates} time={timestamp} ticker={ticker}/>
       </main>
 
     </div>

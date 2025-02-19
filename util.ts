@@ -3,12 +3,13 @@ export function adjustStock(price: number){
     //randomly increase or decrease given number and return it
     //todo: make more random
     let num = Math.floor(Math.random() * 2)
+    let rand = Math.random()
     switch(num){
         case 1:
-            price = price - (price/100)
+            price = price - ((price/100)*rand)
             break
         default:
-            price = price + (price/100)
+            price = price + ((price/100)*rand)
             break
         }
 
@@ -17,7 +18,8 @@ export function adjustStock(price: number){
 
 function adjustPattern(pattern: number[], multiplier: number = 1){
     let nextPrice = pattern[pattern.length-1]
-    pattern.push((nextPrice + ((nextPrice/100)) * multiplier) )
+    let rand = Math.random()
+    pattern.push((nextPrice + ((nextPrice/100)*rand) * multiplier) )
 }
 
 
