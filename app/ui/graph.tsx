@@ -20,8 +20,7 @@ export default function Graph({prices, dates, time, ticker}: {prices: number[], 
 
   useEffect(()=>{
     function startTimeout(){
-      let timeoutId: NodeJS.Timeout
-      timeoutId= setTimeout(()=>{
+      const timeoutId: NodeJS.Timeout = setTimeout(()=>{
         nextDay = nextDay.toString()
         const orders: number[] = [...pattern]
         let nextPrice: number = 0
